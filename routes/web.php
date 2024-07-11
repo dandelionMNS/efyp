@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FypController;
+use App\Http\Controllers\FypFilesController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,40 +23,33 @@ Route::middleware('auth')->group(function () {
 //handle User
 {
     Route::get('/admin/user', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.user.index');
-    
     Route::get('/admin/users/add', [UserController::class, 'addPage'])->middleware(['auth', 'verified'])->name('admin.user.addPage');
     Route::post('/admin/users/added', [UserController::class, 'add'])->middleware(['auth', 'verified'])->name('admin.user.add');
-
     Route::get('/admin/user/{id}', [UserController::class, 'userDetails'])->middleware(['auth', 'verified'])->name('admin.user.details');
-    
-    Route::put('/user/{id}/update', [UserController::class, 'update     '])->middleware(['auth', 'verified'])->name('admin.user.update');
+    Route::put('/user/{id}/update', [UserController::class, 'update'])->middleware(['auth', 'verified'])->name('admin.user.update');
     Route::delete('/admin/user/{id}/delete', [UserController::class, 'userDelete'])->middleware(['auth', 'verified'])->name('admin.user.delete');
-
 }
 
 //Handle Fyp
 {
+    //Admin
     Route::get('/admin/fyp', [FypController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.fyp.index');
 
+    //Student
+    Route::get('/student/{u_id}/fyp/', [FypController::class, 'indexStudent'])->middleware(['auth', 'verified'])->name('student.fyp.index');
+    Route::get('/student/{u_id}/fyp/form', [FypController::class, 'form'])->middleware(['auth', 'verified'])->name('student.fyp.form');
+    Route::post('/fyp/form/submit', [FypController::class, 'submit'])->middleware(['auth', 'verified'])->name('student.fyp.submit');
+    Route::delete('fyp/{fyp_id}/delete', [FypController::class, 'delete'])->middleware(['auth', 'verified'])->name('student.fyp.delete');
 
-
-
-
-
-
-
-
-
-    Route::get('/fyp/student/{id}', [FypController::class, 'indexStudent'])->middleware(['auth', 'verified'])->name('fyp.index.student');
-
-    Route::post('/fyp/added', [FypController::class, 'add'])->middleware(['auth', 'verified'])->name('fyp.add');
-
-    Route::get('/fyp/admin/{f_id}', [FypController::class, 'details'])->middleware(['auth', 'verified'])->name('fyp.details');
-    Route::get('/fyp/student/{f_id}', [FypController::class, 'details'])->middleware(['auth', 'verified'])->name('fyp.detailStudent');
-
-    Route::put('/fyp/admin/{f_id}/updated', [FypController::class, 'update'])->middleware(['auth', 'verified'])->name('fyp.update');
-    Route::put('/fyp/student/{f_id}/updated/{id}', [FypController::class, 'updateStudent'])->middleware(['auth', 'verified'])->name('fyp.updateStudent');
-    Route::delete('/fyp/{f_id}/deleted', [FypController::class, 'delete'])->middleware(['auth', 'verified'])->name('fyp.delete');
 }
 
-require __DIR__.'/auth.php';
+//Handle FYP File
+{
+    //Student
+    Route::get('/student/fyp/{fyp_id}/attach', [FypFilesController::class, 'attachFile'])->middleware(['auth', 'verified'])->name('student.file.attach');
+    Route::post('/student/fyp/{fyp_id}/attach/upload', [FypFilesController::class, 'upload'])->middleware(['auth', 'verified'])->name('student.file.upload');
+    Route::get('/student/file/{file_id}', [FypFilesController::class, 'details'])->middleware(['auth', 'verified'])->name('student.file.details');
+    Route::delete('/student/file/delete', [FypFilesController::class, 'delete'])->middleware(['auth', 'verified'])->name('student.file.delete');
+}
+
+require __DIR__ . '/auth.php';

@@ -30,13 +30,13 @@
                     </div>
                 @elseif(auth()->user()->role == 'lecturer')
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.fyp.index')" :active="request()->routeIs('others')">
+                        <x-nav-link :href="route('admin.fyp.index')" :active="request()->routeIs('admin.fyp.index')">
                             Submitted FYP List
                         </x-nav-link>
                     </div>
                 @elseif(auth()->user()->role == 'student')
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.fyp.index')" :active="request()->routeIs('others')">
+                        <x-nav-link :href="route('student.fyp.index',['u_id'=>auth()->user()->id])" :active="request()->routeIs('student.fyp.index')">
                            FYP Project
                         </x-nav-link>
                     </div>
