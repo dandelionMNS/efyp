@@ -67,10 +67,10 @@
                     </div>
                     <div class="counters">
                         <h1>
-                            {{ $users->where('role', 'teacher')->count() }}
+                            {{ $users->where('role', 'lecturer')->count() }}
                         </h1>
                         <h3>
-                            Teachers
+                            Lecturer
                         </h3>
                     </div>
                 </div>

@@ -8,6 +8,12 @@
                 cursor: pointer;
             }
         }
+
+        [type=text],
+        textarea {
+            padding: 10px;
+            border-radius: 15px;
+        }
     </style>
 
     <x-slot name="header">
@@ -28,32 +34,32 @@
                     <a class='btn' href='{{ route('student.fyp.form', ['u_id' => auth()->user()->id]) }}'>FYP
                         Submission Form</a>
                 @else
-                    <a class='btn' href='{{ route('student.fyp.form', ['u_id' => auth()->user()->id]) }}'>FYP
-                        Submission Form</a>
                     @foreach ($fyps as $fyp)
-                        <div class="flex flex-col gap-3 p-10">
-                            <h2 class="text-3xl font-bold text-center">{{ $fyp->title }}</h2>
+
+                        <div class="flex flex-col gap-3 p-10 items-center ">
+                            <h2 class="text-3xl font-bold text-center" style='max-width: 600px;'>{{ $fyp->title }}</h2>
                             <p>{{ $fyp->description }}</p>
                             <p>Examiner: <strong> {{ $fyp->examiner->name }}</strong></p>
                             <p>Status: <strong> {{ $fyp->status }}</strong></p>
                             <p>Grade: <strong> {{ $fyp->grade == null ? $fyp->status : $fyp->grade }}</strong></p>
                             <p class="flex">Remarks:
-                                <textarea class="mx-3" cols="40" disabled> {{ $fyp->grade }}</textarea>
+                                <textarea class="mx-3" cols="40" disabled> {{ $fyp->remarks }}</textarea>
                             </p>
 
                             @if (isset($fypFiles[$fyp->id]) && !$fypFiles[$fyp->id]->isEmpty())
-                                <div class="p-2 m-2 rounded-lg" style='border: 1px solid #2a67a0'>
+                                <div class="p-2 m-2 rounded-lg" style='max-width: 400px ;border: 1px solid #2a67a0'>
                                     <h3 class="text-lg font-bold text-center">Files</h3>
                                     <ol>
                                         @foreach ($fypFiles[$fyp->id] as $index => $file)
-                                            <li class="p-2 flex justify-between">{{ $index + 1 }}. {{ $file->location }}
+                                            <li class="p-2 flex gap-10 justify-between">{{ $index + 1 }}.
+                                                {{ $file->location }}
                                                 <div class="flex gap-1">
                                                     <a class="text-blue-400 underline" download
                                                         href='{{ asset($file->location) }}'>
                                                         Download
                                                     </a>
                                                     @if (auth()->user()->role == 'student')
-                                                        <form class="w-fit" method="POST"
+                                                        <form class="w-fit" method="post"
                                                             action="{{ route('student.file.delete', ['file_id' => $file->id]) }}">
 
                                                             @csrf
@@ -82,6 +88,7 @@
                                 @method('DELETE')
                                 <input class="btn text-red-600" type="submit" value="Remove">
                             </form>
+                        </div>
                     @endforeach
                 @endif
             </div>

@@ -31,7 +31,7 @@ class FypFilesController extends Controller
         $file->location = "attachment/{$docName}";
         $file->save();
 
-        return redirect()->route('student.fyp.index',['u_id'=>auth()->user()->id]);
+        return redirect()->route('student.fyp.index', ['u_id' => auth()->user()->id]);
     }
 
     public function details($file_id)
@@ -40,22 +40,20 @@ class FypFilesController extends Controller
         return view('student.fyp_file', compact('fyp'));
     }
 
-
     public function delete($file_id)
     {
-        $fyp_file = Fyp::findOrFail($file_id);
-        $u_id = $fyp_file->fyp->user_id;
-
-        if (!empty($fyp->location)) {
-            $leavePath = public_path($fyp_file->location);
-
-            if (file_exists($leavePath)) {
-                unlink($leavePath);
+        $file = FypFile::findOrFail($file_id);
+        if ($file) {
+            $filePath = public_path($file->location);
+            if (file_exists($filePath)) {
+                unlink($filePath);
             }
+            $file->delete();
+
+            return redirect()->back()->with('success', 'FYP successfully deleted');
+        } else {
+            return redirect()->back()->with('error', 'FYP not found');
         }
-
-        $fyp_file->delete();
-
-        return redirect()->route('student.fyp.index', ['u_id'=>$u_id])->with('success', 'Fyp successfully deleted');
     }
+
 }

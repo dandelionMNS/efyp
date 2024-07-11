@@ -2,7 +2,7 @@
 /node_modules
 /public/build
 /public/hot
-/public/file
+/public/attachment
 /public/storage
 /storage/*.key
 /vendor

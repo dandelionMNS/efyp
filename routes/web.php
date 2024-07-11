@@ -44,12 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/lecturer/fyp/{fyp_id}/submit', [FypController::class, 'marked'])->middleware(['auth', 'verified'])->name('lecturer.fyp.marked');
 }
 
-//Handle FYP File
+//Handle File
 {
     Route::get('/student/fyp/{fyp_id}/attach', [FypFilesController::class, 'attachFile'])->middleware(['auth', 'verified'])->name('student.file.attach');
     Route::post('/student/fyp/{fyp_id}/attach/upload', [FypFilesController::class, 'upload'])->middleware(['auth', 'verified'])->name('student.file.upload');
     Route::get('/student/file/{file_id}', [FypFilesController::class, 'details'])->middleware(['auth', 'verified'])->name('student.file.details');
-    Route::delete('/student/file/delete', [FypFilesController::class, 'delete'])->middleware(['auth', 'verified'])->name('student.file.delete');
+    Route::delete('/student/file/{file_id}', [FypFilesController::class, 'delete'])->middleware(['auth', 'verified'])->name('student.file.delete');
 }
 
 require __DIR__ . '/auth.php';
