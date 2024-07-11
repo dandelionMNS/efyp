@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('examiner_id')->constrained('users');
+            $table->string('status')->default('Not marked yet.');
+            $table->string('grade')->nullable();
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }
