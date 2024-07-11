@@ -15,19 +15,19 @@ class FypController extends Controller
         $fyps = Fyp::all();
         return view("admin.fyp_index", compact("fyps"));
     }
+
     public function indexStudent($u_id)
     {
         $user = $u_id;
         $fyps = Fyp::where('user_id', $u_id)->get();
         $fypFiles = [];
-    
+
         foreach ($fyps as $fyp) {
             $fypFiles[$fyp->id] = FypFile::where('fyp_id', $fyp->id)->get();
         }
-    
+
         return view("student.fyp_index", compact("fyps", 'user', 'fypFiles'));
     }
-    
 
     public function form()
     {
@@ -55,7 +55,6 @@ class FypController extends Controller
 
         return view('admin.applicationDetails', compact('fyp'));
     }
-
 
     public function update(Request $request, $f_id)
     {
@@ -89,7 +88,6 @@ class FypController extends Controller
         return redirect()->route('fyp.index.student', compact('id'))->with('success', 'Fyp updated successfully!');
     }
 
-
     public function delete($fyp_id)
     {
         $fyp = Fyp::findOrFail($fyp_id);
@@ -105,7 +103,43 @@ class FypController extends Controller
 
         $fyp->delete();
 
-        return redirect()->route('student.fyp.index',['u_id'=>$u_id])->with('success', 'Fyp successfully deleted');
+        return redirect()->route('student.fyp.index', ['u_id' => $u_id])->with('success', 'Fyp successfully deleted');
     }
+
+    public function indexLecturer($u_id)
+    {
+        $user = $u_id;
+        $fyps = Fyp::where('examiner_id', $u_id)->get();
+        $fypFiles = [];
+
+        foreach ($fyps as $fyp) {
+            $fypFiles[$fyp->id] = FypFile::where('fyp_id', $fyp->id)->get();
+        }
+
+        return view("lecturer.fyp_index", compact("fyps", 'user', 'fypFiles'));
+    }
+
+
+    public function markFYP($fyp_id)
+    {
+        $fyp = Fyp::findOrFail($fyp_id);
+        $fypFiles = [];
+
+        $fypFiles[$fyp->id] = FypFile::where('fyp_id', $fyp->id)->get();
+
+        return view("lecturer.fyp_mark", compact("fyp", 'fypFiles'));
+    }
+
+    public function marked(Request $request,$fyp_id){
+        $fyp = Fyp::findOrFail($fyp_id);
+        $fyp->status = 'Marked';
+        $fyp->grade = $request->input("grade");
+        $fyp->remarks = $request->input("remarks");
+        $fyp->save();
+
+        return redirect()->route('lecturer.fyp.index', ['u_id' => $fyp->examiner->id]);
+    }
+
+
 
 }

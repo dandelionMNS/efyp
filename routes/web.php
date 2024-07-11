@@ -32,20 +32,20 @@ Route::middleware('auth')->group(function () {
 
 //Handle Fyp
 {
-    //Admin
-    Route::get('/admin/fyp', [FypController::class, 'index'])->middleware(['auth', 'verified'])->name('admin.fyp.index');
-
     //Student
     Route::get('/student/{u_id}/fyp/', [FypController::class, 'indexStudent'])->middleware(['auth', 'verified'])->name('student.fyp.index');
     Route::get('/student/{u_id}/fyp/form', [FypController::class, 'form'])->middleware(['auth', 'verified'])->name('student.fyp.form');
     Route::post('/fyp/form/submit', [FypController::class, 'submit'])->middleware(['auth', 'verified'])->name('student.fyp.submit');
     Route::delete('fyp/{fyp_id}/delete', [FypController::class, 'delete'])->middleware(['auth', 'verified'])->name('student.fyp.delete');
 
+    //Lecturer
+    Route::get('/lecturer/{u_id}/fyp/', [FypController::class, 'indexLecturer'])->middleware(['auth', 'verified'])->name('lecturer.fyp.index');
+    Route::get('/lecturer/fyp/{fyp_id}/details', [FypController::class, 'markFYP'])->middleware(['auth', 'verified'])->name('lecturer.fyp.details');
+    Route::put('/lecturer/fyp/{fyp_id}/submit', [FypController::class, 'marked'])->middleware(['auth', 'verified'])->name('lecturer.fyp.marked');
 }
 
 //Handle FYP File
 {
-    //Student
     Route::get('/student/fyp/{fyp_id}/attach', [FypFilesController::class, 'attachFile'])->middleware(['auth', 'verified'])->name('student.file.attach');
     Route::post('/student/fyp/{fyp_id}/attach/upload', [FypFilesController::class, 'upload'])->middleware(['auth', 'verified'])->name('student.file.upload');
     Route::get('/student/file/{file_id}', [FypFilesController::class, 'details'])->middleware(['auth', 'verified'])->name('student.file.details');

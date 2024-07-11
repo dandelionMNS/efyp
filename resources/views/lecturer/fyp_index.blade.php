@@ -49,80 +49,35 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white text-base overflow-hidden shadow-sm sm:rounded-lg flex flex-col items-center p-10">
+                <div class="grid grid-cols-1 w-full md:grid-cols-2" style="max-width:400px">
+                    <div class="counters " style='border-left: 1px solid #999;'>
+                        <h1>
+                            {{ $fyps->where('status', 'Not marking yet')->where('examiner_id', auth()->user()->id)->count() }}
+                        </h1>
+                        <p>
+                            Pending
+                        </p>
+                    </div>
+                    <div class="counters mid-c">
+                        <h1>
+                            {{ $fyps->where('status', 'Marked')->where('examiner_id', auth()->user()->id)->count() }}
+                        </h1>
+                        <p>
+                            Marked
+                        </p>
 
-                @if (auth()->user()->role == 'admin')
-                    <div class="grid grid-cols-1 w-full md:grid-cols-3" style="max-width:800px">
-                        <div class="counters">
-
-                            <h1>
-                                {{ $fyps->where('status', 'Pending')->count() }}
-                            </h1>
-                            <p>
-                                Pending
-                            </p>
-                        </div>
-                        <div class="counters mid-c">
-
-                            <h1>
-                                {{ $fyps->where('status', 'Approved')->count() }}
-                            </h1>
-                            <p>
-                                Approved
-                            </p>
-
-                        </div>
-                        <div class="counters">
-                            <h1>
-                                {{ $fyps->where('status', 'Rejected')->count() }}
-                            </h1>
-                            <p>
-                                Rejected
-                            </p>
-                        </div>
                     </div>
 
-                @else
-                    <div class="grid grid-cols-1 w-full md:grid-cols-3" style="max-width:800px">
-                        <div class="counters">
-
-                            <h1>
-                                {{ $fyps->where('status', 'Pending')->where('user_id', $user)->count() }}
-                            </h1>
-                            <p>
-                                Pending
-                            </p>
-                        </div>
-                        <div class="counters mid-c">
-
-                            <h1>
-                                {{ $fyps->where('status', 'Approved')->where('user_id', $user)->count() }}
-                            </h1>
-                            <p>
-                                Approved
-                            </p>
-
-                        </div>
-                        <div class="counters">
-                            <h1>
-                                {{ $fyps->where('status', 'Rejected')->where('user_id', $user)->count() }}
-                            </h1>
-                            <p>
-                                Rejected
-                            </p>
-                        </div>
-                    </div>
-                @endif
-
-
+                </div>
 
                 <table class="w-full">
                     <thead>
                         <td class="w-min">No.</td>
-                        @if (auth()->user()->role == 'admin')
-                            <td class="w-1/2 text-nowrap">Name</td>
-                        @endif
-                        <td class="w-1/2 text-nowrap ">Title</td>
+                        <td class="w-fit text-nowrap">Name</td>
+                        <td class="w-fit text-nowrap ">Title</td>
                         <td class="w-fit text-nowrap">Status</td>
+                        <td class="w-fit text-nowrap">Grade</td>
+                        <td class="w-fit text-nowrap">Remarks</td>
                         <td colspan="2">Actions</td>
                     </thead>
                     <tbody>
@@ -130,7 +85,7 @@
                             <?= $counter = 1 ?>
                         </div>
                         @foreach ($fyps as $fyp)
-                            @if (auth()->user()->role == 'admin')
+                            @if (auth()->user()->id == $fyp->examiner_id)
                                 <tr>
                                     <td>
                                         <?= $counter++ ?>
@@ -138,54 +93,16 @@
                                     <td>{{ $fyp->user->name }}</td>
                                     <td>{{ $fyp->title }}</td>
                                     <td>{{ $fyp->status }}</td>
+                                    <td>{{ $fyp->grade == null ? ' - ' : $fyp->grade }}</td>
+                                    <td>{{ $fyp->remarks == null ? ' - ' : $fyp->remarks }}</td>
                                     <td class="p-3">
-                                        <a href="{{ route('fyp.details', ['f_id' => $fyp->id]) }}" class="btn">
-                                            Details
+                                        <a href="{{ route('lecturer.fyp.details', ['fyp_id' => $fyp->id]) }}"
+                                            class="btn">
+                                            Mark
                                         </a>
                                     </td>
 
-                                    <td class="p-3">
-                                        @if ($fyp->status != 'Approved')
-                                            <fyp class="w-fit" method="POST" onsubmit="showAlert(event)"
-                                                action="{{ route('fyp.delete', ['f_id' => $fyp->id]) }}">
-
-                                                @csrf
-                                                @method('DELETE')
-                                                <input class="btn dlt" type="submit" value="Remove">
-                                            </fyp>
-                                        @endif
-                                    </td>
                                 </tr>
-                            @else
-                                @if (auth()->user()->id == $fyp->user_id)
-                                    <tr>
-                                        <td>
-                                            <?= $counter++ ?>
-                                        </td>
-                                        <td>{{ $fyp->title }}</td>
-                                        <td>{{ $fyp->status }}</td>
-                                        <td class="p-3">
-                                            <a href="{{ route('fyp.details', ['f_id' => $fyp->id]) }}"
-                                                class="btn">
-                                                Details
-                                            </a>
-                                        </td>
-
-                                        <td class="p-3">
-                                            @if ($fyp->status != 'Approved')
-                                                <fyp class="w-fit" method="POST" onsubmit="showAlert(event)"
-                                                    action="{{ route('fyp.delete', ['f_id' => $fyp->id]) }}">
-
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <input class="btn dlt" type="submit" value="Remove">
-                                                </fyp>
-                                            @endif
-
-                                        </td>
-
-                                    </tr>
-                                @endif
                             @endif
                         @endforeach
                     </tbody>
